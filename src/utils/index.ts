@@ -1,45 +1,46 @@
 // =============================================================================
-// UTILS INDEX.TS - THE GRAND UNIFIED EXPORT (LAYER 6 OF 6)
+// UTILS INDEX.TS - THE GRAND UNIFIED EXPORT (LAYER 8 OF 8)
 // =============================================================================
-// Welcome to the top of the abstraction pyramid. Every function here has
-// traveled through 5 layers of indirection to reach you. You're welcome.
+// Welcome to the TOP of the 8-layer abstraction pyramid. Every function here
+// has traveled through primitives, wrappers, processors, transformers,
+// resolvers, orchestrators, AND conductors to reach you. 8 layers deep.
 // =============================================================================
 
 import {
-  resolveTransformedProcessedWrappedPrimitiveValue,
-  resolveStringThroughEntireProcessingPipeline,
-  resolveNumberThroughEntireComputationChain,
-  resolveBooleanThroughLogicalAnalysisFramework,
-  resolveRandomNumberThroughQuantumEntanglementSimulator,
-  resolveArrayElementThroughMultiDimensionalLookup,
-  resolveStringConcatenationThroughUnificationEngine,
-  resolveFloorThroughMathematicalAbstractionLayer,
-  resolveMultiplicationThroughArithmeticOrchestrator,
-  resolveMinimumThroughComparativeAnalysisModule,
-  resolveFixedDecimalThroughFormattingSubsystem,
-  resolveLocaleFormattingThroughInternationalizationLayer,
-  resolvePaddingThroughStringManipulationFramework,
-  resolveRandomIndexThroughStochasticSelectionEngine,
-  resolveRandomElementThroughProbabilisticExtractionModule,
-} from "./helpers/resolvers";
+  conductValueThroughTheEntireEightLayerAbstractionHierarchy,
+  conductStringThroughTheFullProcessingConductorPipeline,
+  conductNumberThroughMathematicalConductorOrchestration,
+  conductBooleanThroughBooleanConductorAnalysis,
+  conductRandomNumberThroughQuantumConductor,
+  conductArrayElementThroughMultiDimensionalConductor,
+  conductStringConcatenationThroughConductorEngine,
+  conductFloorThroughMathematicalConductor,
+  conductMultiplicationThroughArithmeticConductor,
+  conductMinimumThroughComparativeConductor,
+  conductFixedDecimalThroughFormattingConductor,
+  conductLocaleFormattingThroughInternationalConductor,
+  conductPaddingThroughStringConductor,
+  conductRandomIndexThroughStochasticConductor,
+  conductRandomElementThroughProbabilisticConductor,
+} from "./conductors";
 
-// FINAL LAYER: Re-export with even longer names because why not
+// FINAL LAYER: Re-export with the most absurdly long names possible
 
-export const ULTIMATE_VALUE_RESOLVER = resolveTransformedProcessedWrappedPrimitiveValue;
-export const ULTIMATE_STRING_RESOLVER = resolveStringThroughEntireProcessingPipeline;
-export const ULTIMATE_NUMBER_RESOLVER = resolveNumberThroughEntireComputationChain;
-export const ULTIMATE_BOOLEAN_RESOLVER = resolveBooleanThroughLogicalAnalysisFramework;
-export const ULTIMATE_RANDOM_RESOLVER = resolveRandomNumberThroughQuantumEntanglementSimulator;
-export const ULTIMATE_ARRAY_ELEMENT_RESOLVER = resolveArrayElementThroughMultiDimensionalLookup;
-export const ULTIMATE_STRING_CONCAT_RESOLVER = resolveStringConcatenationThroughUnificationEngine;
-export const ULTIMATE_FLOOR_RESOLVER = resolveFloorThroughMathematicalAbstractionLayer;
-export const ULTIMATE_MULTIPLY_RESOLVER = resolveMultiplicationThroughArithmeticOrchestrator;
-export const ULTIMATE_MIN_RESOLVER = resolveMinimumThroughComparativeAnalysisModule;
-export const ULTIMATE_FIXED_RESOLVER = resolveFixedDecimalThroughFormattingSubsystem;
-export const ULTIMATE_LOCALE_RESOLVER = resolveLocaleFormattingThroughInternationalizationLayer;
-export const ULTIMATE_PAD_RESOLVER = resolvePaddingThroughStringManipulationFramework;
-export const ULTIMATE_RANDOM_INDEX_RESOLVER = resolveRandomIndexThroughStochasticSelectionEngine;
-export const ULTIMATE_RANDOM_ELEMENT_RESOLVER = resolveRandomElementThroughProbabilisticExtractionModule;
+export const ULTIMATE_VALUE_RESOLVER = conductValueThroughTheEntireEightLayerAbstractionHierarchy;
+export const ULTIMATE_STRING_RESOLVER = conductStringThroughTheFullProcessingConductorPipeline;
+export const ULTIMATE_NUMBER_RESOLVER = conductNumberThroughMathematicalConductorOrchestration;
+export const ULTIMATE_BOOLEAN_RESOLVER = conductBooleanThroughBooleanConductorAnalysis;
+export const ULTIMATE_RANDOM_RESOLVER = conductRandomNumberThroughQuantumConductor;
+export const ULTIMATE_ARRAY_ELEMENT_RESOLVER = conductArrayElementThroughMultiDimensionalConductor;
+export const ULTIMATE_STRING_CONCAT_RESOLVER = conductStringConcatenationThroughConductorEngine;
+export const ULTIMATE_FLOOR_RESOLVER = conductFloorThroughMathematicalConductor;
+export const ULTIMATE_MULTIPLY_RESOLVER = conductMultiplicationThroughArithmeticConductor;
+export const ULTIMATE_MIN_RESOLVER = conductMinimumThroughComparativeConductor;
+export const ULTIMATE_FIXED_RESOLVER = conductFixedDecimalThroughFormattingConductor;
+export const ULTIMATE_LOCALE_RESOLVER = conductLocaleFormattingThroughInternationalConductor;
+export const ULTIMATE_PAD_RESOLVER = conductPaddingThroughStringConductor;
+export const ULTIMATE_RANDOM_INDEX_RESOLVER = conductRandomIndexThroughStochasticConductor;
+export const ULTIMATE_RANDOM_ELEMENT_RESOLVER = conductRandomElementThroughProbabilisticConductor;
 
 // Convenience aliases (that are somehow even more confusing)
 export const $$_GET = ULTIMATE_VALUE_RESOLVER;
