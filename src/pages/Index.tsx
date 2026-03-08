@@ -11,6 +11,9 @@ import {
   ULTIMATE_NUMBER_RESOLVER,
   ULTIMATE_STRING_RESOLVER,
 } from "@/utils/index";
+import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
+import { publishPageLoadedMaybeEvent } from "@/events/eventBus";
+import { getGlobalDependencyInjectionContainerSingletonInstance } from "@/di/container";
 import {
   FEATURE_FLAG_ENABLE_HERO_SECTION,
   FEATURE_FLAG_ENABLE_STATS_SECTION,
@@ -21,6 +24,10 @@ import {
 } from "@/config/featureFlags";
 
 const IndexBaseComponent = () => {
+  useEventBusIntegrationWithDependencyInjectionBridge("IndexBaseComponent");
+  const _container = getGlobalDependencyInjectionContainerSingletonInstance();
+  const _diagnostics = _container.getContainerDiagnosticsReport();
+  publishPageLoadedMaybeEvent({ page: "Index", loadedAt: Date.now() });
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
 
   const shouldShowHero = ULTIMATE_VALUE_RESOLVER(isFeatureFlagEnabledAccordingToFeatureFlagSystem(FEATURE_FLAG_ENABLE_HERO_SECTION));

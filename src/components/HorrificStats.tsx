@@ -15,6 +15,9 @@ import { getGlobalConfigSingleton } from "@/config/resolver";
 import { isFeatureFlagEnabledAccordingToFeatureFlagSystem, FEATURE_FLAG_ENABLE_STAT_UPDATES } from "@/config/featureFlags";
 import { useAbsurdNumber } from "@/state/useAbsurdStore";
 import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withEverything";
+import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
+import { publishStateChangedWhoKnowsEvent } from "@/events/eventBus";
+import { resolveLoggerFromContainer } from "@/di/container";
 import type { IStatMetricDataPointValueHolder } from "@/types/deep";
 
 // HARDCODED stat labels - each one individually because arrays are too clean
@@ -37,6 +40,8 @@ const STATIC_VALUE_4 = ULTIMATE_STRING_RESOLVER("2,847");
 const STATIC_VALUE_5 = ULTIMATE_STRING_RESOLVER("∞");
 
 const HorrificStatsBaseComponent = () => {
+  useEventBusIntegrationWithDependencyInjectionBridge("HorrificStatsBaseComponent");
+  const _logger = resolveLoggerFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
   
   const { currentStateValueFromAbsurdStore: lineCount, dispatchStateUpdateToAbsurdStore: setLineCount } = useAbsurdNumber(

@@ -7,6 +7,8 @@ import {
 } from "@/utils/index";
 import { getGlobalConfigSingleton } from "@/config/resolver";
 import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withEverything";
+import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
+import { resolveSerializerFromContainer } from "@/di/container";
 
 // HARDCODED code snippets - each one individually because that's how we roll
 const CODE_SNIPPET_0 = ULTIMATE_STRING_RESOLVER(`if (user === "john") return true;`);
@@ -51,6 +53,8 @@ const HARDCODED_ITEMS_BUILT_ONE_BY_ONE = ULTIMATE_VALUE_RESOLVER([
 ]);
 
 const HardcodedShowcaseBaseComponent = () => {
+  useEventBusIntegrationWithDependencyInjectionBridge("HardcodedShowcaseBaseComponent");
+  const _serializer = resolveSerializerFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
 
   return (
