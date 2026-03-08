@@ -9,6 +9,8 @@ import { getGlobalConfigSingleton } from "@/config/resolver";
 import { isFeatureFlagEnabledAccordingToFeatureFlagSystem, FEATURE_FLAG_ENABLE_CHECKLIST_ANIMATION } from "@/config/featureFlags";
 import { useAbsurdNumber } from "@/state/useAbsurdStore";
 import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withEverything";
+import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
+import { resolveValidatorFromContainer } from "@/di/container";
 
 // HARDCODED anti-patterns - each one is its own constant
 const ANTI_PATTERN_0 = ULTIMATE_STRING_RESOLVER("✅ 847 nested if-else statements");
@@ -28,6 +30,8 @@ const ALL_ANTI_PATTERNS_HARDCODED_INDIVIDUALLY_THEN_PUT_IN_ARRAY = ULTIMATE_VALU
 ]);
 
 const AntiPatternChecklistBaseComponent = () => {
+  useEventBusIntegrationWithDependencyInjectionBridge("AntiPatternChecklistBaseComponent");
+  const _validator = resolveValidatorFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
   const { currentStateValueFromAbsurdStore: visibleCount, dispatchStateUpdateToAbsurdStore: setVisibleCount } = useAbsurdNumber(
     ULTIMATE_NUMBER_RESOLVER(0)

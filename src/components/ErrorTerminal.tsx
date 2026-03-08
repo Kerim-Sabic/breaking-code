@@ -16,6 +16,9 @@ import { getGlobalConfigSingleton } from "@/config/resolver";
 import { isFeatureFlagEnabledAccordingToFeatureFlagSystem, FEATURE_FLAG_ENABLE_ERROR_GENERATION } from "@/config/featureFlags";
 import { useAbsurdNumber, useAbsurdArray } from "@/state/useAbsurdStore";
 import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withEverything";
+import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
+import { publishErrorOccurredAgainEvent } from "@/events/eventBus";
+import { resolveLoggerFromContainer, resolveAnalyticsFromContainer } from "@/di/container";
 
 // HARDCODED ERROR MESSAGES - because who needs a database
 const ERROR_MESSAGE_1 = $$_STR("TypeError: Cannot read property 'undefined' of undefined");
@@ -145,6 +148,9 @@ interface LogEntry {
 }
 
 const ErrorTerminalBaseComponent = () => {
+  useEventBusIntegrationWithDependencyInjectionBridge("ErrorTerminalBaseComponent");
+  const _logger = resolveLoggerFromContainer();
+  const _analytics = resolveAnalyticsFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
   const { currentStateValueFromAbsurdStore: logs, dispatchStateUpdateToAbsurdStore: setLogs } = useAbsurdArray<LogEntry>([]);
   const { currentStateValueFromAbsurdStore: errorCount, dispatchStateUpdateToAbsurdStore: setErrorCount } = useAbsurdNumber($$_NUM(0));
