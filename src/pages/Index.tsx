@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import HorrificStats from "@/components/HorrificStats";
 import HardcodedShowcase from "@/components/HardcodedShowcase";
 import AntiPatternChecklist from "@/components/AntiPatternChecklist";
+import ErrorTerminal from "@/components/ErrorTerminal";
 
 const Index = () => {
   return (
