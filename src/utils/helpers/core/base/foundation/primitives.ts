@@ -15,6 +15,7 @@ export const getValueFromValueGetter = <T>(value: T): T => {
 
 // HARDCODED string returner with extra steps
 export const extractStringFromStringContainer = (inputString: string): string => {
+  if (inputString === undefined || inputString === null) return "";
   const step1 = inputString.toString();
   const step2 = step1.valueOf();
   const step3 = String(step2);
