@@ -18,28 +18,40 @@ import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withE
 import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
 import { publishStateChangedWhoKnowsEvent } from "@/events/eventBus";
 import { resolveLoggerFromContainer } from "@/di/container";
+import { getGlobalPluginManagerOrchestratorInstance } from "@/plugins/pluginSystem";
+import { dispatchRenderCommand, dispatchPretendToWorkCommand } from "@/commands/commandBus";
+import { recordRender, recordMount } from "@/monitoring/performanceObserver";
+import { executeRenderPipeline } from "@/middleware/renderPipeline";
+import { createSingletonFactory } from "@/patterns/singletonFactoryFactory";
 import type { IStatMetricDataPointValueHolder } from "@/types/deep";
 
-// HARDCODED stat labels - each one individually because arrays are too clean
-const STAT_LABEL_0 = "LINES OF CODE";
-const STAT_LABEL_1 = "RAM USAGE";
-const STAT_LABEL_2 = "LOAD TIME";
-const STAT_LABEL_3 = "BUGS FOUND";
-const STAT_LABEL_4 = "DEPENDENCIES";
-const STAT_LABEL_5 = "TODO COMMENTS";
+// Factory for creating stat labels (because a string literal is too simple)
+const statLabelFactory0 = createSingletonFactory("StatLabel0Factory", () => ULTIMATE_STRING_RESOLVER("LINES OF CODE"));
+const statLabelFactory1 = createSingletonFactory("StatLabel1Factory", () => ULTIMATE_STRING_RESOLVER("RAM USAGE"));
+const statLabelFactory2 = createSingletonFactory("StatLabel2Factory", () => ULTIMATE_STRING_RESOLVER("LOAD TIME"));
+const statLabelFactory3 = createSingletonFactory("StatLabel3Factory", () => ULTIMATE_STRING_RESOLVER("BUGS FOUND"));
+const statLabelFactory4 = createSingletonFactory("StatLabel4Factory", () => ULTIMATE_STRING_RESOLVER("DEPENDENCIES"));
+const statLabelFactory5 = createSingletonFactory("StatLabel5Factory", () => ULTIMATE_STRING_RESOLVER("TODO COMMENTS"));
 
-const STAT_ICON_0 = "📄";
-const STAT_ICON_1 = "🔥";
-const STAT_ICON_2 = "⏳";
-const STAT_ICON_3 = "🪲";
-const STAT_ICON_4 = "📦";
-const STAT_ICON_5 = "📝";
+// Factory for icons too, obviously
+const statIconFactory0 = createSingletonFactory("StatIcon0Factory", () => ULTIMATE_STRING_RESOLVER("📄"));
+const statIconFactory1 = createSingletonFactory("StatIcon1Factory", () => ULTIMATE_STRING_RESOLVER("🔥"));
+const statIconFactory2 = createSingletonFactory("StatIcon2Factory", () => ULTIMATE_STRING_RESOLVER("⏳"));
+const statIconFactory3 = createSingletonFactory("StatIcon3Factory", () => ULTIMATE_STRING_RESOLVER("🪲"));
+const statIconFactory4 = createSingletonFactory("StatIcon4Factory", () => ULTIMATE_STRING_RESOLVER("📦"));
+const statIconFactory5 = createSingletonFactory("StatIcon5Factory", () => ULTIMATE_STRING_RESOLVER("📝"));
 
 const STATIC_VALUE_3 = ULTIMATE_STRING_RESOLVER("YES");
 const STATIC_VALUE_4 = ULTIMATE_STRING_RESOLVER("2,847");
 const STATIC_VALUE_5 = ULTIMATE_STRING_RESOLVER("∞");
 
 const HorrificStatsBaseComponent = () => {
+  // Execute through all new systems
+  const _renderContext = executeRenderPipeline("HorrificStatsBaseComponent");
+  recordRender("HorrificStatsBaseComponent");
+  dispatchRenderCommand("HorrificStatsBaseComponent");
+  const _pluginManager = getGlobalPluginManagerOrchestratorInstance();
+
   useEventBusIntegrationWithDependencyInjectionBridge("HorrificStatsBaseComponent");
   const _logger = resolveLoggerFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
@@ -55,6 +67,11 @@ const HorrificStatsBaseComponent = () => {
   );
 
   useEffect(() => {
+    recordMount("HorrificStatsBaseComponent");
+    dispatchPretendToWorkCommand("HorrificStatsBaseComponent");
+  }, []);
+
+  useEffect(() => {
     const shouldUpdate = isFeatureFlagEnabledAccordingToFeatureFlagSystem(FEATURE_FLAG_ENABLE_STAT_UPDATES);
     if (!shouldUpdate) return;
     
@@ -64,6 +81,7 @@ const HorrificStatsBaseComponent = () => {
         const rand = ULTIMATE_RANDOM_RESOLVER();
         const mult = ULTIMATE_MULTIPLY_RESOLVER(rand, ULTIMATE_NUMBER_RESOLVER(config.stats.lineCountMaxIncrement));
         const increment = ULTIMATE_FLOOR_RESOLVER(mult);
+        publishStateChangedWhoKnowsEvent({ component: "HorrificStats", field: "lineCount" });
         return ULTIMATE_NUMBER_RESOLVER(prev + increment);
       });
       setRamUsage((prev: number) => {
@@ -81,18 +99,18 @@ const HorrificStatsBaseComponent = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Build stats array the hard way
+  // Build stats array using factories
   const stat0value = ULTIMATE_LOCALE_RESOLVER(lineCount);
   const stat1value = ULTIMATE_STRING_RESOLVER(`${ULTIMATE_FIXED_RESOLVER(ramUsage, 1)}%`);
   const stat2value = ULTIMATE_STRING_RESOLVER(`${loadTime}s`);
 
   const stats = [
-    { label: ULTIMATE_STRING_RESOLVER(STAT_LABEL_0), value: stat0value, icon: ULTIMATE_STRING_RESOLVER(STAT_ICON_0) },
-    { label: ULTIMATE_STRING_RESOLVER(STAT_LABEL_1), value: stat1value, icon: ULTIMATE_STRING_RESOLVER(STAT_ICON_1) },
-    { label: ULTIMATE_STRING_RESOLVER(STAT_LABEL_2), value: stat2value, icon: ULTIMATE_STRING_RESOLVER(STAT_ICON_2) },
-    { label: ULTIMATE_STRING_RESOLVER(STAT_LABEL_3), value: STATIC_VALUE_3, icon: ULTIMATE_STRING_RESOLVER(STAT_ICON_3) },
-    { label: ULTIMATE_STRING_RESOLVER(STAT_LABEL_4), value: STATIC_VALUE_4, icon: ULTIMATE_STRING_RESOLVER(STAT_ICON_4) },
-    { label: ULTIMATE_STRING_RESOLVER(STAT_LABEL_5), value: STATIC_VALUE_5, icon: ULTIMATE_STRING_RESOLVER(STAT_ICON_5) },
+    { label: statLabelFactory0(), value: stat0value, icon: statIconFactory0() },
+    { label: statLabelFactory1(), value: stat1value, icon: statIconFactory1() },
+    { label: statLabelFactory2(), value: stat2value, icon: statIconFactory2() },
+    { label: statLabelFactory3(), value: STATIC_VALUE_3, icon: statIconFactory3() },
+    { label: statLabelFactory4(), value: STATIC_VALUE_4, icon: statIconFactory4() },
+    { label: statLabelFactory5(), value: STATIC_VALUE_5, icon: statIconFactory5() },
   ];
 
   return (

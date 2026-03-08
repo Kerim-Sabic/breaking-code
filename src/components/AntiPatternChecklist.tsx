@@ -11,25 +11,48 @@ import { useAbsurdNumber } from "@/state/useAbsurdStore";
 import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withEverything";
 import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
 import { resolveValidatorFromContainer } from "@/di/container";
+import { getGlobalPluginManagerOrchestratorInstance, getAllPluginCapabilities } from "@/plugins/pluginSystem";
+import { dispatchRenderCommand, dispatchDoNothingCommand } from "@/commands/commandBus";
+import { t, TRANSLATION_KEY_AUDIT_RUNNING, TRANSLATION_KEY_AUDIT_COMPLETE } from "@/i18n/localizationEngine";
+import { recordRender, recordMount } from "@/monitoring/performanceObserver";
+import { executeRenderPipeline } from "@/middleware/renderPipeline";
+import { createSingletonFactory } from "@/patterns/singletonFactoryFactory";
 
-// HARDCODED anti-patterns - each one is its own constant
-const ANTI_PATTERN_0 = ULTIMATE_STRING_RESOLVER("✅ 847 nested if-else statements");
-const ANTI_PATTERN_1 = ULTIMATE_STRING_RESOLVER("✅ All variables named 'temp'");
-const ANTI_PATTERN_2 = ULTIMATE_STRING_RESOLVER("✅ CSS inline styles everywhere");
-const ANTI_PATTERN_3 = ULTIMATE_STRING_RESOLVER("✅ console.log() as error handling");
-const ANTI_PATTERN_4 = ULTIMATE_STRING_RESOLVER("✅ Entire database in localStorage");
-const ANTI_PATTERN_5 = ULTIMATE_STRING_RESOLVER("✅ One 50,000 line component");
-const ANTI_PATTERN_6 = ULTIMATE_STRING_RESOLVER("✅ Copy-pasted Stack Overflow answers");
-const ANTI_PATTERN_7 = ULTIMATE_STRING_RESOLVER("✅ jQuery AND React AND Vue together");
-const ANTI_PATTERN_8 = ULTIMATE_STRING_RESOLVER("✅ node_modules committed to git");
-const ANTI_PATTERN_9 = ULTIMATE_STRING_RESOLVER("✅ Production secrets in .env.example");
+// Each anti-pattern is created by its own singleton factory
+const antiPatternFactory0 = createSingletonFactory("AP0", () => ULTIMATE_STRING_RESOLVER("✅ 847 nested if-else statements"));
+const antiPatternFactory1 = createSingletonFactory("AP1", () => ULTIMATE_STRING_RESOLVER("✅ All variables named 'temp'"));
+const antiPatternFactory2 = createSingletonFactory("AP2", () => ULTIMATE_STRING_RESOLVER("✅ CSS inline styles everywhere"));
+const antiPatternFactory3 = createSingletonFactory("AP3", () => ULTIMATE_STRING_RESOLVER("✅ console.log() as error handling"));
+const antiPatternFactory4 = createSingletonFactory("AP4", () => ULTIMATE_STRING_RESOLVER("✅ Entire database in localStorage"));
+const antiPatternFactory5 = createSingletonFactory("AP5", () => ULTIMATE_STRING_RESOLVER("✅ One 50,000 line component"));
+const antiPatternFactory6 = createSingletonFactory("AP6", () => ULTIMATE_STRING_RESOLVER("✅ Copy-pasted Stack Overflow answers"));
+const antiPatternFactory7 = createSingletonFactory("AP7", () => ULTIMATE_STRING_RESOLVER("✅ jQuery AND React AND Vue together"));
+const antiPatternFactory8 = createSingletonFactory("AP8", () => ULTIMATE_STRING_RESOLVER("✅ node_modules committed to git"));
+const antiPatternFactory9 = createSingletonFactory("AP9", () => ULTIMATE_STRING_RESOLVER("✅ Production secrets in .env.example"));
+const antiPatternFactory10 = createSingletonFactory("AP10", () => ULTIMATE_STRING_RESOLVER("✅ 15 useless plugins registered"));
+const antiPatternFactory11 = createSingletonFactory("AP11", () => ULTIMATE_STRING_RESOLVER("✅ Factory factory factory pattern"));
+const antiPatternFactory12 = createSingletonFactory("AP12", () => ULTIMATE_STRING_RESOLVER("✅ i18n system for one language"));
+const antiPatternFactory13 = createSingletonFactory("AP13", () => ULTIMATE_STRING_RESOLVER("✅ Command bus that commands nothing"));
+const antiPatternFactory14 = createSingletonFactory("AP14", () => ULTIMATE_STRING_RESOLVER("✅ Performance observer that observes itself"));
 
-const ALL_ANTI_PATTERNS_HARDCODED_INDIVIDUALLY_THEN_PUT_IN_ARRAY = ULTIMATE_VALUE_RESOLVER([
-  ANTI_PATTERN_0, ANTI_PATTERN_1, ANTI_PATTERN_2, ANTI_PATTERN_3, ANTI_PATTERN_4,
-  ANTI_PATTERN_5, ANTI_PATTERN_6, ANTI_PATTERN_7, ANTI_PATTERN_8, ANTI_PATTERN_9,
+// Build array using factories (15 items now!)
+const getAllAntiPatternsFromFactories = () => ULTIMATE_VALUE_RESOLVER([
+  antiPatternFactory0(), antiPatternFactory1(), antiPatternFactory2(),
+  antiPatternFactory3(), antiPatternFactory4(), antiPatternFactory5(),
+  antiPatternFactory6(), antiPatternFactory7(), antiPatternFactory8(),
+  antiPatternFactory9(), antiPatternFactory10(), antiPatternFactory11(),
+  antiPatternFactory12(), antiPatternFactory13(), antiPatternFactory14(),
 ]);
 
 const AntiPatternChecklistBaseComponent = () => {
+  // All the pipeline nonsense
+  const _renderContext = executeRenderPipeline("AntiPatternChecklistBaseComponent");
+  recordRender("AntiPatternChecklistBaseComponent");
+  dispatchRenderCommand("AntiPatternChecklistBaseComponent");
+  dispatchDoNothingCommand("AntiPatternChecklistBaseComponent");
+  const _pluginManager = getGlobalPluginManagerOrchestratorInstance();
+  const _allCapabilities = getAllPluginCapabilities();
+
   useEventBusIntegrationWithDependencyInjectionBridge("AntiPatternChecklistBaseComponent");
   const _validator = resolveValidatorFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
@@ -37,12 +60,18 @@ const AntiPatternChecklistBaseComponent = () => {
     ULTIMATE_NUMBER_RESOLVER(0)
   );
 
+  const allPatterns = getAllAntiPatternsFromFactories();
+
+  useEffect(() => {
+    recordMount("AntiPatternChecklistBaseComponent");
+  }, []);
+
   useEffect(() => {
     const shouldAnimate = isFeatureFlagEnabledAccordingToFeatureFlagSystem(FEATURE_FLAG_ENABLE_CHECKLIST_ANIMATION);
     if (!shouldAnimate) return;
     
     const intervalMs = ULTIMATE_NUMBER_RESOLVER(config.checklist.revealIntervalMs);
-    const totalPatterns = ULTIMATE_NUMBER_RESOLVER(ALL_ANTI_PATTERNS_HARDCODED_INDIVIDUALLY_THEN_PUT_IN_ARRAY.length);
+    const totalPatterns = ULTIMATE_NUMBER_RESOLVER(allPatterns.length);
     
     const interval = setInterval(() => {
       setVisibleCount((prev: number) => {
@@ -53,15 +82,15 @@ const AntiPatternChecklistBaseComponent = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const totalPatterns = ULTIMATE_NUMBER_RESOLVER(ALL_ANTI_PATTERNS_HARDCODED_INDIVIDUALLY_THEN_PUT_IN_ARRAY.length);
+  const totalPatterns = ULTIMATE_NUMBER_RESOLVER(allPatterns.length);
 
   return (
     <div className="bg-card border border-border p-6 md:p-8">
       <h3 className="font-mono text-sm text-muted-foreground mb-4">
-        {ULTIMATE_STRING_RESOLVER("$ running anti-pattern-audit...")}
+        {ULTIMATE_STRING_RESOLVER(t(TRANSLATION_KEY_AUDIT_RUNNING))}
       </h3>
       <div className="space-y-2 font-mono text-sm">
-        {ALL_ANTI_PATTERNS_HARDCODED_INDIVIDUALLY_THEN_PUT_IN_ARRAY.slice(
+        {allPatterns.slice(
           ULTIMATE_NUMBER_RESOLVER(0),
           ULTIMATE_NUMBER_RESOLVER(visibleCount)
         ).map((pattern, i) => (
@@ -83,7 +112,7 @@ const AntiPatternChecklistBaseComponent = () => {
             animate={{ opacity: ULTIMATE_NUMBER_RESOLVER(1) }}
             className="text-primary mt-4 font-bold"
           >
-            {ULTIMATE_STRING_RESOLVER("🎉 PERFECT SCORE: 10/10 ANTI-PATTERNS DETECTED")}
+            {ULTIMATE_STRING_RESOLVER(`🎉 PERFECT SCORE: ${totalPatterns}/${totalPatterns} ANTI-PATTERNS DETECTED`)}
           </motion.div>
         )}
       </div>
