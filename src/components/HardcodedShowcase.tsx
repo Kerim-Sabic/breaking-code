@@ -9,57 +9,77 @@ import { getGlobalConfigSingleton } from "@/config/resolver";
 import { withAbsolutelyEverythingWrappedInMaximumAbstraction } from "@/hoc/withEverything";
 import { useEventBusIntegrationWithDependencyInjectionBridge } from "@/hooks/useEventBusIntegration";
 import { resolveSerializerFromContainer } from "@/di/container";
+import { getGlobalPluginManagerOrchestratorInstance } from "@/plugins/pluginSystem";
+import { dispatchRenderCommand, dispatchThinkAboutItCommand } from "@/commands/commandBus";
+import { recordRender, recordMount } from "@/monitoring/performanceObserver";
+import { executeRenderPipeline } from "@/middleware/renderPipeline";
+import { createSingletonFactory, createFactoryFactory } from "@/patterns/singletonFactoryFactory";
+import { useEffect } from "react";
 
-// HARDCODED code snippets - each one individually because that's how we roll
-const CODE_SNIPPET_0 = ULTIMATE_STRING_RESOLVER(`if (user === "john") return true;`);
-const COMMENT_0 = ULTIMATE_STRING_RESOLVER("// auth system");
-const CODE_SNIPPET_1 = ULTIMATE_STRING_RESOLVER(`if (user === "jane") return true;`);
-const COMMENT_1 = ULTIMATE_STRING_RESOLVER("// auth system v2");
-const CODE_SNIPPET_2 = ULTIMATE_STRING_RESOLVER(`const pi = 3;`);
-const COMMENT_2 = ULTIMATE_STRING_RESOLVER("// close enough");
-const CODE_SNIPPET_3 = ULTIMATE_STRING_RESOLVER(`const isWeekend = day === "Sat" || day === "Sun" || day === "Mon";`);
-const COMMENT_3 = ULTIMATE_STRING_RESOLVER("// 3-day weekends");
-const CODE_SNIPPET_4 = ULTIMATE_STRING_RESOLVER(`try { } catch(e) { }`);
-const COMMENT_4 = ULTIMATE_STRING_RESOLVER("// problem solved");
-const CODE_SNIPPET_5 = ULTIMATE_STRING_RESOLVER(`// TODO: fix this later`);
-const COMMENT_5 = ULTIMATE_STRING_RESOLVER("// written 4 years ago");
-const CODE_SNIPPET_6 = ULTIMATE_STRING_RESOLVER(`const password = "admin123";`);
-const COMMENT_6 = ULTIMATE_STRING_RESOLVER("// ultra secure");
-const CODE_SNIPPET_7 = ULTIMATE_STRING_RESOLVER(`while(true) { break; }`);
-const COMMENT_7 = ULTIMATE_STRING_RESOLVER("// infinite wisdom");
-const CODE_SNIPPET_8 = ULTIMATE_STRING_RESOLVER(`return !(!(!(!true)));`);
-const COMMENT_8 = ULTIMATE_STRING_RESOLVER("// definitely true");
-const CODE_SNIPPET_9 = ULTIMATE_STRING_RESOLVER(`sleep(10000);`);
-const COMMENT_9 = ULTIMATE_STRING_RESOLVER("// let the CPU rest");
-const CODE_SNIPPET_10 = ULTIMATE_STRING_RESOLVER(`if (x > 0 && x < 0) { }`);
-const COMMENT_10 = ULTIMATE_STRING_RESOLVER("// quantum logic");
-const CODE_SNIPPET_11 = ULTIMATE_STRING_RESOLVER(`const arr = [1]; arr.length = 99999;`);
-const COMMENT_11 = ULTIMATE_STRING_RESOLVER("// pre-optimization");
+// Factory factories for code snippets (a factory that creates a factory that creates a string)
+const codeSnippetFactoryFactory0 = createFactoryFactory("CodeSnippet0", () => ULTIMATE_STRING_RESOLVER(`if (user === "john") return true;`));
+const codeSnippetFactoryFactory1 = createFactoryFactory("CodeSnippet1", () => ULTIMATE_STRING_RESOLVER(`if (user === "jane") return true;`));
+const codeSnippetFactoryFactory2 = createFactoryFactory("CodeSnippet2", () => ULTIMATE_STRING_RESOLVER(`const pi = 3;`));
+const codeSnippetFactoryFactory3 = createFactoryFactory("CodeSnippet3", () => ULTIMATE_STRING_RESOLVER(`const isWeekend = day === "Sat" || day === "Sun" || day === "Mon";`));
+const codeSnippetFactoryFactory4 = createFactoryFactory("CodeSnippet4", () => ULTIMATE_STRING_RESOLVER(`try { } catch(e) { }`));
+const codeSnippetFactoryFactory5 = createFactoryFactory("CodeSnippet5", () => ULTIMATE_STRING_RESOLVER(`// TODO: fix this later`));
+const codeSnippetFactoryFactory6 = createFactoryFactory("CodeSnippet6", () => ULTIMATE_STRING_RESOLVER(`const password = "admin123";`));
+const codeSnippetFactoryFactory7 = createFactoryFactory("CodeSnippet7", () => ULTIMATE_STRING_RESOLVER(`while(true) { break; }`));
+const codeSnippetFactoryFactory8 = createFactoryFactory("CodeSnippet8", () => ULTIMATE_STRING_RESOLVER(`return !(!(!(!true)));`));
+const codeSnippetFactoryFactory9 = createFactoryFactory("CodeSnippet9", () => ULTIMATE_STRING_RESOLVER(`sleep(10000);`));
+const codeSnippetFactoryFactory10 = createFactoryFactory("CodeSnippet10", () => ULTIMATE_STRING_RESOLVER(`if (x > 0 && x < 0) { }`));
+const codeSnippetFactoryFactory11 = createFactoryFactory("CodeSnippet11", () => ULTIMATE_STRING_RESOLVER(`const arr = [1]; arr.length = 99999;`));
 
-// Build array the absurd way
-const HARDCODED_ITEMS_BUILT_ONE_BY_ONE = ULTIMATE_VALUE_RESOLVER([
-  { code: CODE_SNIPPET_0, comment: COMMENT_0 },
-  { code: CODE_SNIPPET_1, comment: COMMENT_1 },
-  { code: CODE_SNIPPET_2, comment: COMMENT_2 },
-  { code: CODE_SNIPPET_3, comment: COMMENT_3 },
-  { code: CODE_SNIPPET_4, comment: COMMENT_4 },
-  { code: CODE_SNIPPET_5, comment: COMMENT_5 },
-  { code: CODE_SNIPPET_6, comment: COMMENT_6 },
-  { code: CODE_SNIPPET_7, comment: COMMENT_7 },
-  { code: CODE_SNIPPET_8, comment: COMMENT_8 },
-  { code: CODE_SNIPPET_9, comment: COMMENT_9 },
-  { code: CODE_SNIPPET_10, comment: COMMENT_10 },
-  { code: CODE_SNIPPET_11, comment: COMMENT_11 },
-]);
+// Comments via singleton factories
+const commentFactory0 = createSingletonFactory("Comment0", () => ULTIMATE_STRING_RESOLVER("// auth system"));
+const commentFactory1 = createSingletonFactory("Comment1", () => ULTIMATE_STRING_RESOLVER("// auth system v2"));
+const commentFactory2 = createSingletonFactory("Comment2", () => ULTIMATE_STRING_RESOLVER("// close enough"));
+const commentFactory3 = createSingletonFactory("Comment3", () => ULTIMATE_STRING_RESOLVER("// 3-day weekends"));
+const commentFactory4 = createSingletonFactory("Comment4", () => ULTIMATE_STRING_RESOLVER("// problem solved"));
+const commentFactory5 = createSingletonFactory("Comment5", () => ULTIMATE_STRING_RESOLVER("// written 4 years ago"));
+const commentFactory6 = createSingletonFactory("Comment6", () => ULTIMATE_STRING_RESOLVER("// ultra secure"));
+const commentFactory7 = createSingletonFactory("Comment7", () => ULTIMATE_STRING_RESOLVER("// infinite wisdom"));
+const commentFactory8 = createSingletonFactory("Comment8", () => ULTIMATE_STRING_RESOLVER("// definitely true"));
+const commentFactory9 = createSingletonFactory("Comment9", () => ULTIMATE_STRING_RESOLVER("// let the CPU rest"));
+const commentFactory10 = createSingletonFactory("Comment10", () => ULTIMATE_STRING_RESOLVER("// quantum logic"));
+const commentFactory11 = createSingletonFactory("Comment11", () => ULTIMATE_STRING_RESOLVER("// pre-optimization"));
+
+// Get code snippets through factory factory invocation chain
+const getCodeSnippet = (factoryFactory: () => () => string) => factoryFactory()();
 
 const HardcodedShowcaseBaseComponent = () => {
+  // Execute all pipeline systems
+  const _renderContext = executeRenderPipeline("HardcodedShowcaseBaseComponent");
+  recordRender("HardcodedShowcaseBaseComponent");
+  dispatchRenderCommand("HardcodedShowcaseBaseComponent");
+  dispatchThinkAboutItCommand("HardcodedShowcaseBaseComponent");
+  const _pluginManager = getGlobalPluginManagerOrchestratorInstance();
+
   useEventBusIntegrationWithDependencyInjectionBridge("HardcodedShowcaseBaseComponent");
   const _serializer = resolveSerializerFromContainer();
   const config = ULTIMATE_VALUE_RESOLVER(getGlobalConfigSingleton());
 
+  useEffect(() => { recordMount("HardcodedShowcaseBaseComponent"); }, []);
+
+  // Build array using factory factory pattern
+  const HARDCODED_ITEMS_BUILT_THROUGH_FACTORY_FACTORIES = ULTIMATE_VALUE_RESOLVER([
+    { code: getCodeSnippet(codeSnippetFactoryFactory0), comment: commentFactory0() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory1), comment: commentFactory1() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory2), comment: commentFactory2() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory3), comment: commentFactory3() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory4), comment: commentFactory4() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory5), comment: commentFactory5() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory6), comment: commentFactory6() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory7), comment: commentFactory7() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory8), comment: commentFactory8() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory9), comment: commentFactory9() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory10), comment: commentFactory10() },
+    { code: getCodeSnippet(codeSnippetFactoryFactory11), comment: commentFactory11() },
+  ]);
+
   return (
     <div className="space-y-2">
-      {HARDCODED_ITEMS_BUILT_ONE_BY_ONE.map((item, i) => (
+      {HARDCODED_ITEMS_BUILT_THROUGH_FACTORY_FACTORIES.map((item, i) => (
         <motion.div
           key={ULTIMATE_NUMBER_RESOLVER(i)}
           initial={{ opacity: ULTIMATE_NUMBER_RESOLVER(0), x: ULTIMATE_NUMBER_RESOLVER(-20) }}
