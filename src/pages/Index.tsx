@@ -93,6 +93,20 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Error Terminal */}
+      <section className="px-4 py-16 md:py-24">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="font-mono text-xs text-muted-foreground mb-8 tracking-widest"
+          >
+            // LIVE ERROR LOG (100% REAL, DEFINITELY NOT FAKE)
+          </motion.h2>
+          <ErrorTerminal />
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="px-4 py-12 border-t border-border">
         <div className="max-w-4xl mx-auto text-center font-mono text-xs text-muted-foreground space-y-2">
